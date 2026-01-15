@@ -256,7 +256,10 @@
 			 return Promise.all(list.map(src=>{
 			  const i=new Image();
 			  i.src=src;
-			  return i.decode?.() ?? new Promise(r=>i.onload=i.onerror=r);
+			  return new Promise(r=>{
+				i.onload=r;
+				i.onerror=r;   // never reject
+			  });
 			 }));
 			}
 			
