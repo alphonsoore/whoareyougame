@@ -167,6 +167,9 @@
 			z-index:10;
 			touch-action:none;
 			}
+			#animals.hidden{
+			visibility:hidden;
+			}
 			.sprite{
 			width:120px;
 			height:120px;
@@ -234,6 +237,7 @@
 		</div>
 		<audio id="startSound" src="./audio/start.wav"></audio>
 		<script>
+			document.addEventListener("contextmenu", e => e.preventDefault(), { passive:false });
 			const animalNames=[
 			 "mouse","cow","tiger","rabbit","dragon","snake",
 			 "horse","goat","monkey","rooster","dog","pig"
@@ -287,6 +291,7 @@
 			  sceneryMask.style.height=cropped?"85%":"100%";
 			  cropToggle.style.bottom=cropped?"15%":"0";
 			  cropToggle.className=cropped?"down":"up";
+			  animals.classList.toggle("hidden", !cropped);
 			};
 			
 			/* CLEAR */
