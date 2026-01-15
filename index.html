@@ -208,9 +208,9 @@
 		</div>
 		<div id="game">
 			<div id="playfield">
-				<img id="background" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/background1.png">
+				<img id="background" src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/background1.png">
 				<div id="sceneryMask">
-					<img id="scenery" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/images/scenery1.png">
+					<img id="scenery" src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/scenery1.png">
 				</div>
 				<div id="handleBay"></div>
 				<div id="cropToggle" class="down"><span></span></div>
@@ -219,11 +219,11 @@
 				<div id="sceneryControls">
 					<div class="button" id="changeScenery">
 						<div class="shadow"></div>
-						<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/changescenery.png">
+						<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/changescenery.png">
 					</div>
 					<div class="button" id="dimScenery">
 						<div class="shadow"></div>
-						<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/dimscenery.png">
+						<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/dimscenery.png">
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -231,11 +231,11 @@
 				<div class="divider"></div>
 				<div class="button" id="clearBtn">
 					<div class="shadow"></div>
-					<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/clear.png">
+					<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/clear.png">
 				</div>
 			</div>
 		</div>
-		<audio id="startSound" src="./audio/start.wav"></audio>
+		<audio id="startSound" src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/audio/start.wav"></audio>
 		<script>
 			document.addEventListener("contextmenu", e => e.preventDefault(), { passive:false });
 			const animalNames=[
@@ -244,12 +244,12 @@
 			];
 			
 			const PRELOAD=[
-			 "https://github.com/alphonsoore/whoareyougame/blob/main/images/images/background1.png",
-			 "https://github.com/alphonsoore/whoareyougame/blob/main/images/images/Scenery1.png",
-			 "https://github.com/alphonsoore/whoareyougame/blob/main/images/images/changescenery.png",
-			 "https://github.com/alphonsoore/whoareyougame/blob/main/images/images/dimscenery.png",
-			 "https://github.com/alphonsoore/whoareyougame/blob/main/images/images/clear.png",
-			 ...animalNames.map(n=>`https://github.com/alphonsoore/whoareyougame/blob/main/images/images/${n}.png`)
+			 "https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/background1.png",
+			 "https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/Scenery1.png",
+			 "https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/changescenery.png",
+			 "https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/dimscenery.png",
+			 "https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/clear.png",
+			 ...animalNames.map(n=>`https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/${n}.png`)
 			];
 
 			function preloadImages(list){
@@ -279,7 +279,7 @@
 			animalNames.forEach(n=>{
 			  const b=document.createElement("div");
 			  b.className="button animalBtn";
-			  b.innerHTML=`<div class="shadow"></div><img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/${n}.png">`;
+			  b.innerHTML=`<div class="shadow"></div><img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/${n}.png">`;
 			  b.onclick=()=>addAnimal(n,b);
 			  animalsDiv.appendChild(b);
 			});
@@ -300,8 +300,8 @@
 			
 			changeScenery.onclick = () => {
 			  sceneryIndex = (sceneryIndex % SCENERY_COUNT) + 1;
-			  scenery.src = `https://github.com/alphonsoore/whoareyougame/blob/main/images/scenery${sceneryIndex}.png`;
-			  background.src = `https://github.com/alphonsoore/whoareyougame/blob/main/images/background${sceneryIndex}.png`;
+			  scenery.src = `https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/scenery${sceneryIndex}.png`;
+			  background.src = `https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/background${sceneryIndex}.png`;
 			};
 			dimScenery.onclick=()=>{
 			  dim=!dim;
@@ -355,7 +355,7 @@
 
 			  a.innerHTML=`
 				<div class="arm" style="height:0px"></div>
-				<img class="sprite" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/${name}.png">
+				<img class="sprite" src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/${name}.png">
 				<div class="handle">
 				  <div class="move">◎</div>
 				  <div class="up">▲</div>
