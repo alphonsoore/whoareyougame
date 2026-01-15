@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+		<title>Rabbits in the Scenery</title>
+		<link rel="icon" type="image/png" href="./favicon.png">
+		<style>
+			img{
+			-webkit-user-drag:none;
+			user-drag:none;
+			user-select:none;
+			touch-action:none;
+			pointer-events:none;
+			}
+			*{
+			user-select:none;
+			-webkit-user-select:none;
+			-ms-user-select:none;
+			}
+			html,body{
+			margin:0;height:100%;overflow:hidden;background:#222;font-family:sans-serif;
+			}
+			/* SPLASH */
+			#splash{
+			position:absolute;inset:0;
+			display:flex;align-items:center;justify-content:center;
+			background:linear-gradient(135deg,#0b4cff,#00a86b);z-index:50;
+			}
+			#startBtn{
+			font-size:56px;
+			padding:20px 40px;
+			border-radius:12px;
+			}
+			/* GAME LAYOUT */
+			#game{display:none;width:100%;height:100%;position:relative}
+			/* PLAYFIELD */
+			#playfield{
+			position:absolute;left:0;top:0;
+			width:80%;height:100%;
+			background:#111;
+			overflow:hidden;
+			}
+			/* SCENERY (TOP-ANCHORED, CROPPED) */
+			#sceneryMask{
+			position:absolute;
+			top:0; left:0;
+			width:100%;
+			height:85%;      /* visible window */
+			overflow:hidden;
+			z-index: 20;
+			}
+			#scenery{
+			position:absolute;
+			top:0; left:0;
+			width:100%;
+			height:100vh;    /* full tablet height */
+			object-fit:cover;
+			}
+			#background{
+			position:absolute;
+			inset:0;
+			width:100%;
+			height:100%;
+			object-fit:cover;
+			opacity:80%;
+			}
+			/* HANDLE BAY (BOTTOM 15%) */
+			#handleBay{
+			position:absolute;left:0;bottom:0;
+			width:100%;height:15%;
+			z-index:5;
+			}
+			/* TOGGLE */
+			#cropToggle{
+			position:absolute;left:50%;
+			transform:translateX(-50%);
+			width:60px;height:60px;border-radius:50%;
+			background:rgba(255,255,255,.85);
+			display:flex;align-items:center;justify-content:center;
+			bottom:15%;z-index:30;
+			}
+			#cropToggle span{
+			width:0;height:0;
+			border-left:15px solid transparent;
+			border-right:15px solid transparent;
+			}
+			.down span{border-top:20px solid #000}
+			.up span{border-bottom:20px solid #000}
+			/* TOOLBOX */
+			#toolbox{
+			position:absolute;
+			right:0; top:0;
+			width:20%; height:100%;
+			background:#ddd;
+			border-left:4px solid #999;
+			display:flex;
+			flex-direction:column;
+			align-items:center;
+			justify-content:flex-start;
+			}
+			#clearBtn{margin-top:auto;margin-bottom:20px;}
+			/* GENERIC IMAGE BUTTON */
+			.button{
+			position:relative;
+			margin:10px;
+			width:80%;
+			}
+			.button.latched{
+			transform:translate(4px,4px);
+			}
+			.button.latched .shadow{
+			  inset:0;
+			}
+			.button img{
+			width:100%;
+			display:block;
+			}
+			.shadow{
+			position:absolute;
+			inset:4px 4px -4px -4px;
+			background:rgba(0,0,0,.5);
+			z-index:-1;
+			}
+			.button:active{
+			transform:translate(4px,4px);
+			}
+			.button:active .shadow{
+			inset:0;
+			}
+			.divider{
+			width:90%;
+			height:2px;
+			background:#999;
+			margin:10px 0;
+			}
+			#sceneryControls{
+			display:flex;
+			gap:8px;
+			width:90%;
+			justify-content:center;
+			}
+			#sceneryControls .button{
+			width:45%;
+			}
+			/* ANIMAL BUTTON GRID: 6 ROWS × 2 COLUMNS */
+			#animals{
+			display:grid;
+			grid-template-columns:1fr 1fr;
+			grid-template-rows:repeat(6, auto);
+			gap:6px;
+			width:90%;
+			justify-items:center;
+			}
+			.animalBtn{
+			width:100%;
+			border: 2px solid green;
+			justify-items: center;
+			}
+			.animalBtn img{
+			width:100%;
+			max-width:60px;
+			}
+			.animal{
+			position:absolute;
+			bottom:0;
+			z-index:10;
+			touch-action:none;
+			}
+			.sprite{
+			width:120px;
+			height:120px;
+			}
+			.arm{
+			position:absolute;
+			left:50%;transform:translateX(20%);
+			bottom:40px;
+			width:10px;background:#ccc;
+			opacity:50%;
+			}
+			.sprite{
+			position:absolute;
+			left:50%;transform:translateX(-50%);
+			}
+			.handle{
+			position:absolute;left:0;bottom:0;
+			background:#ccc;border-radius:10px;
+			padding:10px;display:flex;gap:10px;
+			margin:20px;
+			font-size:32pt;
+			}
+			.handle div{
+			width:48px;height:48px;border-radius:50%;
+			background:#eee;
+			display:flex;align-items:center;justify-content:center;
+			}
+			.handle .move{
+			margin-right:40px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="splash">
+			<button id="startBtn">▷</button>
+		</div>
+		<div id="game">
+			<div id="playfield">
+				<img id="background" src="./images/background1.png">
+				<div id="sceneryMask">
+					<img id="scenery" src="./images/Scenery1.png">
+				</div>
+				<div id="handleBay"></div>
+				<div id="cropToggle" class="down"><span></span></div>
+			</div>
+			<div id="toolbox">
+				<div id="sceneryControls">
+					<div class="button" id="changeScenery">
+						<div class="shadow"></div>
+						<img src="./images/changescenery.png">
+					</div>
+					<div class="button" id="dimScenery">
+						<div class="shadow"></div>
+						<img src="./images/dimscenery.png">
+					</div>
+				</div>
+				<div class="divider"></div>
+				<div id="animals"></div>
+				<div class="divider"></div>
+				<div class="button" id="clearBtn">
+					<div class="shadow"></div>
+					<img src="./images/clear.png">
+				</div>
+			</div>
+		</div>
+		<audio id="startSound" src="./audio/start.wav"></audio>
+		<script>
+			const animalNames=[
+			 "mouse","cow","tiger","rabbit","dragon","snake",
+			 "horse","goat","monkey","rooster","dog","pig"
+			];
+			
+			const animalsDiv=document.getElementById("animals");
+			const playfield=document.getElementById("playfield");
+			const sceneryMask=document.getElementById("sceneryMask");
+			const scenery=document.getElementById("scenery");
+			const cropToggle=document.getElementById("cropToggle");
+			
+			let cropped=true;
+			let dim=false;
+			let sceneryIndex=1;
+			let active=[];
+			let spawn=0;
+			
+			/* BUILD BUTTONS */
+			animalNames.forEach(n=>{
+			  const b=document.createElement("div");
+			  b.className="button animalBtn";
+			  b.innerHTML=`<div class="shadow"></div><img src="./images/${n}.png">`;
+			  b.onclick=()=>addAnimal(n,b);
+			  animalsDiv.appendChild(b);
+			});
+			
+			/* START */
+			startBtn.onclick=()=>{
+			  startSound.play();
+			  splash.style.display="none";
+			  game.style.display="block";
+			  document.documentElement.requestFullscreen?.();
+			};
+			
+			/* SCENERY */
+			const SCENERY_COUNT = 5;
+			
+			changeScenery.onclick = () => {
+			  sceneryIndex = (sceneryIndex % SCENERY_COUNT) + 1;
+			  scenery.src = `./images/Scenery${sceneryIndex}.png`;
+			  background.src = `./images/Background${sceneryIndex}.png`;
+			};
+			dimScenery.onclick=()=>{
+			  dim=!dim;
+			  scenery.style.opacity=dim?0.5:1;
+			};
+			
+			/* CROP */
+			cropToggle.onclick=()=>{
+			  cropped=!cropped;
+			  sceneryMask.style.height=cropped?"85%":"100%";
+			  cropToggle.style.bottom=cropped?"15%":"0";
+			  cropToggle.className=cropped?"down":"up";
+			};
+			
+			/* CLEAR */
+			clearBtn.onclick=()=>{
+			  active.forEach(o=>{
+				o.el.remove();
+				o.btn.classList.remove("latched");
+				o.btn.style.pointerEvents="auto";
+			  });
+			  active=[];
+			  spawn=0;
+			};
+			
+			/* ADD ANIMAL */
+			function addAnimal(name,btn){
+			  /* TOGGLE OFF */
+			  if(btn.classList.contains("latched")){
+				const i=active.findIndex(o=>o.btn===btn);
+				if(i!==-1){
+				  active[i].el.remove();
+				  active.splice(i,1);
+				}
+				btn.classList.remove("latched");
+				return;
+			  }
+
+			  /* TOGGLE ON */
+			  if(active.length>=4)return;
+
+			  btn.classList.add("latched");
+
+			  const slot=playfield.clientWidth/5;
+			  const x=slot*(active.length+1);
+
+			  const a=document.createElement("div");
+			  a.className="animal";
+			  a.style.left=(x-30)+"px";
+
+			  a.innerHTML=`
+				<div class="arm" style="height:0px"></div>
+				<img class="sprite" src="./images/${name}.png">
+				<div class="handle">
+				  <div class="move">◎</div>
+				  <div class="up">▲</div>
+				  <div class="down">▼</div>
+				</div>
+			  `;
+
+			  playfield.appendChild(a);
+			  setupAnimal(a);
+			  active.push({el:a,btn});
+			}
+			
+			/* ANIMAL LOGIC */
+			function setupAnimal(a){
+			  const arm=a.querySelector(".arm");
+			  const sprite=a.querySelector(".sprite");
+			  const move=a.querySelector(".move");
+			  const up=a.querySelector(".up");
+			  const down=a.querySelector(".down");
+			
+			  let drag=false,ox,armTimer=null;
+			
+			  function update(){
+			    sprite.style.bottom=(40+parseInt(arm.style.height))+"px";
+			  }
+			  update();
+			
+			  /* MOVE HANDLE (Y LOCKED TO HANDLE BAY) */
+			  move.onpointerdown=e=>{
+			    drag=true;
+			    ox=e.clientX-parseInt(a.style.left);
+			    move.setPointerCapture(e.pointerId);
+			  };
+			  move.onpointermove=e=>{
+			    if(!drag)return;
+			    let x=e.clientX-ox;
+			    if(x<0)x=0;
+			    if(x>playfield.clientWidth-60)x=playfield.clientWidth-60;
+			    a.style.left=x+"px";
+			  };
+			  move.onpointerup=()=>drag=false;
+			
+			  /* TELESCOPING */
+			  function slide(dir){
+			    armTimer=setInterval(()=>{
+			      let h=parseInt(arm.style.height);
+			      h+=dir*4;
+			      if(h<0)h=0;
+			      const max=sceneryMask.clientHeight-60;
+			      if(h>max)h=max;
+			      arm.style.height=h+"px";
+			      update();
+			    },16);
+			  }
+			  function stop(){clearInterval(armTimer);}
+			
+			  up.onpointerdown=()=>slide(1);
+			  down.onpointerdown=()=>slide(-1);
+			  up.onpointerup=down.onpointerup=stop;
+			  up.onpointerleave=down.onpointerleave=stop;
+			}
+		</script>
+	</body>
+</html>
