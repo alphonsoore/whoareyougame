@@ -208,9 +208,9 @@
 		</div>
 		<div id="game">
 			<div id="playfield">
-				<img id="background" src="./images/background1.png">
+				<img id="background" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/background1.png">
 				<div id="sceneryMask">
-					<img id="scenery" src="./images/Scenery1.png">
+					<img id="scenery" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/images/scenery1.png">
 				</div>
 				<div id="handleBay"></div>
 				<div id="cropToggle" class="down"><span></span></div>
@@ -219,11 +219,11 @@
 				<div id="sceneryControls">
 					<div class="button" id="changeScenery">
 						<div class="shadow"></div>
-						<img src="./images/changescenery.png">
+						<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/changescenery.png">
 					</div>
 					<div class="button" id="dimScenery">
 						<div class="shadow"></div>
-						<img src="./images/dimscenery.png">
+						<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/dimscenery.png">
 					</div>
 				</div>
 				<div class="divider"></div>
@@ -231,7 +231,7 @@
 				<div class="divider"></div>
 				<div class="button" id="clearBtn">
 					<div class="shadow"></div>
-					<img src="./images/clear.png">
+					<img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/clear.png">
 				</div>
 			</div>
 		</div>
@@ -242,6 +242,23 @@
 			 "mouse","cow","tiger","rabbit","dragon","snake",
 			 "horse","goat","monkey","rooster","dog","pig"
 			];
+			
+			const PRELOAD=[
+			 "./images/background1.png",
+			 "./images/Scenery1.png",
+			 "./images/changescenery.png",
+			 "./images/dimscenery.png",
+			 "./images/clear.png",
+			 ...animalNames.map(n=>`./images/${n}.png`)
+			];
+
+			function preloadImages(list){
+			 return Promise.all(list.map(src=>{
+			  const i=new Image();
+			  i.src=src;
+			  return i.decode?.() ?? new Promise(r=>i.onload=i.onerror=r);
+			 }));
+			}
 			
 			const animalsDiv=document.getElementById("animals");
 			const playfield=document.getElementById("playfield");
@@ -259,17 +276,20 @@
 			animalNames.forEach(n=>{
 			  const b=document.createElement("div");
 			  b.className="button animalBtn";
-			  b.innerHTML=`<div class="shadow"></div><img src="./images/${n}.png">`;
+			  b.innerHTML=`<div class="shadow"></div><img src="https://github.com/alphonsoore/whoareyougame/blob/main/images/${n}.png">`;
 			  b.onclick=()=>addAnimal(n,b);
 			  animalsDiv.appendChild(b);
 			});
 			
 			/* START */
 			startBtn.onclick=()=>{
+			 startBtn.disabled=true;
+			 preloadImages(PRELOAD).then(()=>{
 			  startSound.play();
 			  splash.style.display="none";
 			  game.style.display="block";
 			  document.documentElement.requestFullscreen?.();
+			 });
 			};
 			
 			/* SCENERY */
@@ -277,8 +297,8 @@
 			
 			changeScenery.onclick = () => {
 			  sceneryIndex = (sceneryIndex % SCENERY_COUNT) + 1;
-			  scenery.src = `./images/Scenery${sceneryIndex}.png`;
-			  background.src = `./images/Background${sceneryIndex}.png`;
+			  scenery.src = `https://github.com/alphonsoore/whoareyougame/blob/main/images/scenery${sceneryIndex}.png`;
+			  background.src = `https://github.com/alphonsoore/whoareyougame/blob/main/images/background${sceneryIndex}.png`;
 			};
 			dimScenery.onclick=()=>{
 			  dim=!dim;
@@ -332,7 +352,7 @@
 
 			  a.innerHTML=`
 				<div class="arm" style="height:0px"></div>
-				<img class="sprite" src="./images/${name}.png">
+				<img class="sprite" src="https://github.com/alphonsoore/whoareyougame/blob/main/images/${name}.png">
 				<div class="handle">
 				  <div class="move">◎</div>
 				  <div class="up">▲</div>
