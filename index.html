@@ -4,7 +4,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 		<title>Rabbits in the Scenery</title>
-		<link rel="icon" type="image/png" href="./favicon.png">
+		<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/favicon.png">
 		<style>
 			img{
 			-webkit-user-drag:none;
@@ -200,6 +200,31 @@
 			.handle .move{
 			margin-right:40px;
 			}
+			/* HIDE HANDLES + ARMS WHEN CROPPED */
+			.cropped .handle,
+			.cropped .arm{
+			  display:none;
+			}
+			/* INSTRUCTIONS OVERLAY */
+			#instructions{
+			  position:fixed;
+			  inset:0;
+			  background:rgba(0,0,0,.7);
+			  display:none;
+			  z-index:9999;
+			  align-items:center;
+			  justify-content:center;
+			}
+			#instructions .pages{
+			  display:flex;
+			  gap:40px;
+			  padding:40px;
+			}
+			#instructions img{
+			  max-height:90vh;
+			  max-width:40vw;
+			  object-fit:contain;
+			}
 		</style>
 	</head>
 	<body>
@@ -233,6 +258,16 @@
 					<div class="shadow"></div>
 					<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/clear.png">
 				</div>
+				<div class="button" id="helpBtn" style="margin-left:auto;width:60px">
+					<div class="shadow"></div>
+					<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/help.png">
+				</div>
+			</div>
+		</div>
+		<div id="instructions">
+			<div class="pages">
+				<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/page1.png">
+				<img src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/images/page2.png">
 			</div>
 		</div>
 		<audio id="startSound" src="https://raw.githubusercontent.com/alphonsoore/whoareyougame/main/audio/start.wav"></audio>
@@ -307,7 +342,7 @@
 			  dim=!dim;
 			  scenery.style.opacity=dim?0.5:1;
 			};
-			
+
 			/* CROP */
 			cropToggle.onclick=()=>{
 			  cropped=!cropped;
@@ -315,6 +350,7 @@
 			  cropToggle.style.bottom=cropped?"15%":"0";
 			  cropToggle.className=cropped?"down":"up";
 			  animals.classList.toggle("hidden", !cropped);
+			  game.classList.toggle("cropped", !cropped);
 			};
 			
 			/* CLEAR */
@@ -327,7 +363,18 @@
 			  active=[];
 			  spawn=0;
 			};
-			
+
+			const instructions=document.getElementById("instructions");
+			const helpBtn=document.getElementById("helpBtn");
+
+			helpBtn.onclick=()=>{
+			  instructions.style.display="flex";
+			};
+
+			instructions.onclick=()=>{
+			  instructions.style.display="none";
+			};
+
 			/* ADD ANIMAL */
 			function addAnimal(name,btn){
 			  /* TOGGLE OFF */
